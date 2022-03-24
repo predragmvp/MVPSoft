@@ -1,0 +1,124 @@
+﻿@model Ticket
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    ViewData["Title"] = "Ticket";
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-comment-multiple-outline"></i>  Self Service | Ticket</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="SelfService" asp-action="SubmitTicketForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or edit existing Ticket item</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="TicketId" />
+                        <input type="hidden" asp-for="OnBehalfId" />
+                        <input type="hidden" asp-for="TicketName" />
+                        <div class="form-group">
+                            <label asp-for="TicketName"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="TicketName" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="TicketName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TicketTypeId"></label>
+                            <div class="input-group">
+                                <select asp-for="TicketTypeId" class="select2 form-control" asp-items="ViewBag.TicketType"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="TicketTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SubmitDate"></label>
+                            <div class="input-group">
+                                <input type="text" id="SubmitDate" name="SubmitDate" value="@Model.SubmitDate.ToString("yyyy-MM-dd")" class="datepicker form-control" data-val="true" data-val-required="The SubmitDate field is required.">
+                            </div>
+                            <span asp-validation-for="SubmitDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnBehalfId"></label>
+                            <div class="input-group">
+                                <select disabled asp-for="OnBehalfId" class="select2 form-control" asp-items="ViewBag.OnBehalf"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="OnBehalfId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AgentId"></label>
+                            <div class="input-group">
+                                <select asp-for="AgentId" class="select2 form-control" asp-items="ViewBag.Agent"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="AgentId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ParentTicketThreadId"></label>
+                            <div class="input-group">
+                                <select asp-for="ParentTicketThreadId" class="select2 form-control" asp-items="ViewBag.ParentTicketThread"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="ParentTicketThreadId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Solve</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsSolve" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="SolutionNote"></label>
+                            <div class="input-group">
+                                <input asp-for="SolutionNote" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="SolutionNote" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/SelfService/Ticket?period=@period" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

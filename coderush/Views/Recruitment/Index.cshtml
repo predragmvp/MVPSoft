@@ -1,0 +1,149 @@
+﻿@model List<JobVacancy>
+@{
+
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    
+    ViewData["Title"] = controller;
+
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-multiple-plus"></i> @ViewData["Title"]</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="dropdown d-inline">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuOutlineButton1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuOutlineButton1" x-placement="top-start"
+                     style="position: absolute; transform: translate3d(0px, -185px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <h6 class="dropdown-header">Settings</h6>
+                    <a class="dropdown-item" href="~/Recruitment/ThirdPartyIndex">Third Party</a>
+                    <a class="dropdown-item" href="~/Recruitment/ApplicantIndex">Applicant</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="~/Recruitment/OnBoardingIndex">Onboarding</a>
+                    <a class="dropdown-item" href="~/Recruitment/ResignationIndex">Resignation</a>
+                    <a class="dropdown-item" href="~/Recruitment/LayoffIndex">Layoff</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">List of @ViewData["Title"]</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/@controller/Form" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="30%">Name</th>
+                                    <th width="60%">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/@controller/Form/@item.JobVacancyId"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/@controller/Delete/@item.JobVacancyId"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Name
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="mdi mdi-library-books md-18 mr-2"></i> Quick Guide</h4>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-3">
+                            Recruitment module is the place for managing recruitment. The module covering basic functionalities such as: applicant management, interview session, job vacancy management and onboarding preparation.
+                        </p>
+                        <footer class="blockquote-footer text-primary">
+                            Summary
+                        </footer>
+                    </blockquote>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+    <!-- ================== BEGIN PAGE LEVEL CSS START ================== -->
+    <link href="~/assets/vendor/data-table/css/jquery.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/buttons.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/dataTables.bootstrap.min.css" />
+    <!-- ================== BEGIN PAGE LEVEL END ================== -->
+}
+
+@section Scripts{
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/assets/vendor/data-table/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.flash.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.html5.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.print.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.bootstrap.min.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mainTable;
+
+            mainTable = $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                dom: 'lrtip',
+                scrollX: false,
+                pageLength: 5,
+            });
+
+            $('#mainSearch').keyup(function () {
+                mainTable.search($(this).val()).draw();
+            })
+        });
+    </script>
+}
+
+

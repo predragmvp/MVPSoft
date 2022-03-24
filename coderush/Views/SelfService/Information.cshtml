@@ -1,0 +1,167 @@
+﻿@model List<Information>
+@inject coderush.Services.App.ICommon _app;
+@using coderush.ViewModels;
+@using Newtonsoft.Json;
+@{
+
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    ViewData["Title"] = controller;
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+    
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-newspaper"></i> Self Service | Corporate Information @(!String.IsNullOrEmpty(period) ? "for Period " + period : "")</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row mb-2">
+        <a href="/SelfService/Index?period=@period" class="btn btn-primary btn-outline btn-sm ml-4">
+            <i class="mdi mdi-reply"></i>
+            <span class="align-middle">Back</span>
+        </a>
+    </div>
+    <div class="row mb-2">
+        <div class="col-6">
+
+        </div>
+        <div class="col-6">
+            <div class="form-group row">
+                <label class="col-form-label col-sm-2 text-sm-right">Periode</label>
+                <div class="col-sm-6">
+                    <input type="text" id="Period" name="Period" class="datepickeryearmonth form-control">
+                </div>
+                <div class="btn-group col-sm-4" role="group" aria-label="First group">
+                    <a href="#" class="btn btn-primary" onclick="onRefresh()">
+                        <i class="mdi mdi-recycle"></i> Refresh
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">List of Information</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                           
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="30%">Information</th>
+                                    <th width="40%">Link</th>
+                                    <th width="15%">Release</th>
+                                    <th width="15%">Is Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><span style="text-decoration-line:@(!item.IsActive ? "line-through" : "none")">@item.InformationName</span></td>
+                                        <td><a href="@item.ExternalLink" target="_blank">@item.ExternalLink</a></td>
+                                        <td>@item.ReleaseDate.ToString("yyyy-MM-dd")</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="custom-checkbox variation3 mb-0">
+                                                    <input class="form-check-input" type="checkbox" @(item.IsActive ? "checked" : "") onclick="return false;">
+                                                    <i class="input-helper"></i>
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="mdi mdi-library-books md-18 mr-2"></i> Quick Guide</h4>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-3">
+                            Information module will act as handy widgets to access corporate info news and related material.
+                        </p>
+                        <footer class="blockquote-footer text-primary">
+                            Summary
+                        </footer>
+                    </blockquote>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+    <!-- ================== BEGIN PAGE LEVEL CSS START ================== -->
+    <link href="~/assets/vendor/data-table/css/jquery.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/buttons.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/dataTables.bootstrap.min.css" />
+    <!-- ================== BEGIN PAGE LEVEL END ================== -->
+}
+
+@section Scripts{
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/assets/vendor/data-table/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.flash.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.html5.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.print.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/assets/vendor/chartjs/js/Chart.bundle.min.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mainTable;
+
+            mainTable = $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                dom: 'lrtip',
+                scrollX: false,
+                pageLength: 5,
+            });
+
+            $('#mainSearch').keyup(function () {
+                mainTable.search($(this).val()).draw();
+            })
+        });
+
+        function onRefresh() {
+            if ($('#Period').val() !== '') {
+                location.href = '/SelfService/Information?period=' + $('#Period').val();
+            } else {
+                toastr.error('Please select period first!');
+            }
+
+        }
+        
+
+    </script>
+}
+
+

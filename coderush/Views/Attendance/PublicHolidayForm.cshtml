@@ -1,0 +1,155 @@
+﻿@model PublicHoliday
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string action = this.ViewContext.RouteData.Values["action"].ToString();
+    string modelName = "PublicHoliday";
+    ViewData["Title"] = modelName + " Form";
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> Attendance | @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="@controller" asp-action="Submit@(action)" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or Edit Existing @modelName</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="PublicHolidayId" />
+                        <div class="form-group">
+                            <label asp-for="Name"></label>
+                            <div class="input-group">
+                                <input asp-for="Name" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="card-footer">
+                        <a href="/@controller/@(modelName)Index" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            @if (Model.PublicHolidayId != null)
+            {
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="card-title mb-0">Line Details</h4>
+                            <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                                <div class="btn-group mr-3" role="group" aria-label="First group">
+                                    <a href="/@controller/@(modelName + "Line")Form?header=@Model.PublicHolidayId" class="btn btn-primary">
+                                        <i class="mdi mdi-plus-circle"></i> Add
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr class="bg-primary text-white">
+                                        <th width="5%"></th>
+                                        <th width="5%"></th>
+                                        <th width="30%">Description</th>
+                                        <th width="10%">Year</th>
+                                        <th width="20%">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Lines)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <a href="/@controller/@(modelName+"Line")Form/@item.PublicHolidayLineId?header=@item.PublicHolidayId"><i class="icon-note md-18"></i></a>
+                                            </td>
+                                            <td>
+                                                <a href="/@controller/@(modelName+"Line")Delete/@item.PublicHolidayLineId?header=@item.PublicHolidayId"><i class="icon-trash md-18"></i></a>
+                                            </td>
+                                            <td>
+                                                @item.Description
+                                            </td>
+                                            <td>
+                                                @item.PublicHolidayYear
+                                            </td>
+                                            <td>
+                                                @item.PublicHolidayDate.ToString("yyyy-MMM-dd")
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+    <!-- ================== BEGIN PAGE LEVEL CSS START ================== -->
+    <link href="~/assets/vendor/data-table/css/jquery.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/buttons.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/dataTables.bootstrap.min.css" />
+    <!-- ================== BEGIN PAGE LEVEL END ================== -->
+}
+
+@section Scripts {
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/assets/vendor/data-table/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.flash.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.html5.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.print.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.bootstrap.min.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mainTable;
+
+            mainTable = $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                dom: 'lrtip',
+                scrollX: false,
+                pageLength: 5,
+            });
+
+            $('#mainSearch').keyup(function () {
+                mainTable.search($(this).val()).draw();
+            })
+        });
+    </script>
+}
+
+

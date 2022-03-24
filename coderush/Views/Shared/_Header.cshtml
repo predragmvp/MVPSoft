@@ -1,0 +1,85 @@
+﻿<!-- Header Start -->
+<header class="top-bar flex-row align-items-center">
+    <!-- Logo  -->
+    <div class="nav-brand">
+        <div class="hamburg-icon">
+            <a href="javascript:void(0)" class="nav-link">
+                <i class="mdi mdi-menu md-24"></i>
+            </a>
+        </div>
+        <div class="navbar-header">
+            <h2 class="mb-0">
+                <a class="navbar-brand" href="/Identity/Account/Manage/Index">
+                    <img src="~/assets/images/logo.png" height="159" width="159" alt="Admin">
+                </a>
+            </h2>
+        </div>
+    </div>
+    <!-- Logo End  -->
+    <!-- Right Nav -->
+    <div class="navbar-container">
+        <div class="right-bar align-self-center">
+            <div class="search-area">
+                <input class="form-control no-border" type="text" placeholder="Search" id="mainSearch" name="mainSearch" />
+                <div class="search-icon">
+                    <i class="mdi mdi-magnify md-24"></i>
+                    <i class="mdi mdi-arrow-left md-24"></i>
+                </div>
+                <div class="clear-icon">
+                    <i class="mdi mdi-close md-24"></i>
+                </div>
+            </div>
+        </div>
+        <button class="d-md-none three-dots">
+            <i class="mdi mdi-dots-vertical md-24"></i>
+        </button>
+        <div class="notifications">
+            <ul>
+                
+                <li>
+                    <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link" id="userProfile" aria-haspopup="true"
+                       aria-expanded="false">
+                        <img src="~/assets/images/users-thumbs/blank-person-white.png" height="24" width="24" alt="user" class="rounded-circle align-middle" />
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="userProfile">
+                        <ul>
+                            <li>
+                                <a href="/Identity/Account/Manage/Index" class="p-0 border-bottom">
+                                    <div class="d-flex w-100 justify-content-center">
+                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                            <i class="mdi mdi-account-outline mr-0 text-gray"></i>
+                                        </div>
+                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
+                                            <i class="mdi mdi-key mr-0 text-gray"></i>
+                                        </div>
+                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                            <i class="mdi mdi-exit-to-app mr-0 text-gray"></i>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/Identity/Account/Manage/Index">
+                                    Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/Identity/Account/Manage/ChangePassword">
+                                    Change Password
+                                </a>
+                            </li>
+                            <li>
+                                <form id="formSignout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Todo")">
+                                    <a href="javascript:void(0)" onclick="document.getElementById('formSignout').submit();">
+                                        Sign Out
+                                    </a>
+                                </form>                                
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div><!-- Right Nav End -->
+</header>
+<!-- Header End -->

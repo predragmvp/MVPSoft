@@ -1,0 +1,112 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Nice Theme - @ViewData["Title"] </title>
+    <link rel="shortcut icon" href="~/assets/images/favicon.png" type="image/x-icon" />
+    <link rel="stylesheet" href="~/assets/vendor/toastr/toastr.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/select2/css/select2.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap-daterangepicker/css/daterangepicker.css" />
+    @RenderSection("Styles", required: false)
+
+    <!-- ================== APP CSS START ================== -->
+    <link rel="stylesheet" href="~/assets/css/style.css" />
+    <!-- ================== APP CSS END ================== -->
+
+</head>
+<body>
+    <!-- Wrapper Start -->
+    <div id="wrapper">
+        @await Html.PartialAsync("_Header")
+        <!-- Content Wrapper Start -->
+        <div class="main-wrapper" id="main-wrapper">
+            @await Html.PartialAsync("_Navigation")
+            <!-- Main Start -->
+            <main>
+                @RenderBody()
+                @await Html.PartialAsync("_Footer")
+            </main><!-- Main End -->
+        </div><!-- Content Wrapper End -->
+    </div><!-- Wrapper End -->
+    <!-- ================== BEGIN BASE JS ================== -->
+    <script src="~/assets/vendor/jQuery/js/jquery-3.2.1.min.js"></script>
+    <script src="~/assets/vendor/bootstrap/js/popper.min.js"></script>
+    <script src="~/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/assets/vendor/toastr/toastr.min.js"></script>
+    <script src="~/assets/vendor/select2/js/select2.min.js"></script>
+    <script src="~/assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/assets/vendor/bootstrap-daterangepicker/js/moment.min.js"></script>
+    <script src="~/assets/vendor/bootstrap-daterangepicker/js/daterangepicker.js"></script>
+
+    <!--[if lt IE 9]>
+      <script src="~/assets/vendor/html5shiv/js/html5shiv.js"></script>
+      <script src="~/assets/vendor/respondjs/js/respond.min.js"></script>
+    <![endif]-->
+    <script src="~/assets/js/app.js"></script>
+    <!-- ================== END BASE JS ================== -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //initiate all select2 class
+            $('.select2').select2({
+                allowClear: true,
+                placeholder: "Select"
+            });
+
+            //initiate all datepicker class
+            $('.datepicker').datepicker({
+                todayHighlight: true,
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+
+            //initiate all datepickeryearmonth class
+            $('.datepickeryearmonth').datepicker({
+                format: "yyyy-mm",
+                startView: "months",
+                minViewMode: "months",
+                autoclose: true
+            });
+
+            //initiate all datetimepicker class
+            $('.datetimepicker').daterangepicker({
+                singleDatePicker: true,
+                timePicker: true,
+                timePicker24Hour: true,
+                locale: {
+                    format: 'YYYY-MM-DD HH:mm'
+                }                
+            });
+
+            var message = $("#StatusMessage").text();
+            if (message) {
+                if (message.includes("Error")) {
+                    //error
+                    toastr.error(message);
+                } else {
+                    //success
+                    toastr.success(message)
+                }
+            }
+        });
+
+        // Generate Chart
+        function chart(id, type, data, options) {
+            var canvas = document.getElementById(id);
+            var ctx = canvas.getContext('2d');
+            new Chart(ctx, {
+                type: type,
+                data: data,
+                options: options
+            });
+        }
+
+    </script>
+    @RenderSection("Scripts", required: false)
+
+
+</body>
+</html>

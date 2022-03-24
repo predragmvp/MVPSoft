@@ -1,0 +1,129 @@
+﻿@model Leave
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    ViewData["Title"] = "Leave";
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-apps"></i> Self Service | Leave</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="SelfService" asp-action="SubmitLeaveForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or edit existing Leave item</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="LeaveId" />
+                        <input type="hidden" asp-for="OnBehalfId" />
+                        <input type="hidden" asp-for="IsApproved" />
+                        <input type="hidden" asp-for="LeaveName" />
+                        <div class="form-group">
+                            <label asp-for="LeaveName"></label>
+                            <div class="input-group">
+                                <input readonly asp-for="LeaveName" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="LeaveName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control"/>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LeaveTypeId"></label>
+                            <div class="input-group">
+                                <select asp-for="LeaveTypeId" class="select2 form-control" asp-items="ViewBag.LeaveType"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="LeaveTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Paid Leave?</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsPaidLeave" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FromDate"></label>
+                            <div class="input-group">
+                                <input type="text" id="FromDate" name="FromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")" class="datepicker form-control" data-val="true" data-val-required="The FromDate field is required.">
+                            </div>
+                            <span asp-validation-for="FromDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ToDate"></label>
+                            <div class="input-group">
+                                <input type="text" id="ToDate" name="ToDate" value="@Model.ToDate.ToString("yyyy-MM-dd")" class="datepicker form-control" data-val="true" data-val-required="The ToDate field is required.">
+                            </div>
+                            <span asp-validation-for="ToDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnBehalfId"></label>
+                            <div class="input-group">
+                                <select disabled asp-for="OnBehalfId" class="select2 form-control" asp-items="ViewBag.OnBehalf"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="OnBehalfId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EmergencyCall"></label>
+                            <div class="input-group">
+                                <input asp-for="EmergencyCall" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="EmergencyCall" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Approved</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input disabled asp-for="IsApproved" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/SelfService/Leave?period=@period" class="btn btn-default">Back</a>
+                        @if (!Model.IsApproved)
+                        {
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        }
+
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

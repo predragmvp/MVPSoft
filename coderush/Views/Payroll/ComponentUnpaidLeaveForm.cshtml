@@ -1,0 +1,93 @@
+﻿@model PayrollLineUnpaidLeave
+@{
+    ViewData["Title"] = "Payroll";
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-cash-usd"></i> @ViewData["Title"] | @(Model.Payroll.OnBehalf.FirstName + " " + Model.Payroll.OnBehalf.LastName) | @period</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="Payroll" asp-action="SubmitComponentUnpaidLeaveForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Add or edit component UnpaidLeave</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="PayrollLineUnpaidLeaveId" />
+                        <input type="hidden" asp-for="PayrollId" />
+                        <input type="hidden" asp-for="Amount" />
+                        <input type="hidden" asp-for="Days" />
+                        <input type="hidden" asp-for="UnpaidPerDay" />
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LeaveId"></label>
+                            <div class="input-group">
+                                <select asp-for="LeaveId" class="select2 form-control" asp-items="ViewBag.Leave"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="LeaveId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Days"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="Days" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Days" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UnpaidPerDay"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="UnpaidPerDay" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="UnpaidPerDay" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Amount"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="Amount" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Payroll/Form/@Model.PayrollId?period=@period" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

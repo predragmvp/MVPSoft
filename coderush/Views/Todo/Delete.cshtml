@@ -1,0 +1,102 @@
+﻿@model Todo
+@{
+    ViewData["Title"] = "Todo";
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-calendar-multiple-check"></i> @ViewData["Title"]</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="Todo" asp-action="SubmitDelete" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Delete todo item? this process is irreversible</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="TodoId" />
+                        <div class="form-group">
+                            <label asp-for="TodoItem"></label>
+                            <div class="input-group">
+                                <input asp-for="TodoItem" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="TodoTypeId"></label>
+                            <div class="input-group">
+                                <input asp-for="TodoType.Name" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="StartDate"></label>
+                            <div class="input-group">
+                                <input id="StartDate" name="StartDate" value="@Model.StartDate.ToString("yyyy-MM-dd")" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="EndDate"></label>
+                            <div class="input-group">
+                                <input id="EndDate" name="EndDate" value="@Model.EndDate.ToString("yyyy-MM-dd")" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnBehalfId"></label>
+                            <div class="input-group">
+                                <select disabled asp-for="OnBehalfId" class="select2 form-control" asp-items="ViewBag.OnBehalf"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="OnBehalfId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Done</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsDone" class="form-check-input" disabled />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Todo/Index?period=@period" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    
+}
+
+

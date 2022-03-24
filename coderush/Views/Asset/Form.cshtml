@@ -1,0 +1,105 @@
+﻿@model Asset
+@{
+    ViewData["Title"] = "Asset";
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-car"></i> @ViewData["Title"]</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="Asset" asp-action="SubmitForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or edit existing Asset item</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="AssetId" />
+                        <div class="form-group">
+                            <label asp-for="AssetName"></label>
+                            <div class="input-group">
+                                <input asp-for="AssetName" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="AssetName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AssetTypeId"></label>
+                            <div class="input-group">
+                                <select asp-for="AssetTypeId" class="select2 form-control" asp-items="ViewBag.AssetType"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="AssetTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PurchaseDate"></label>
+                            <div class="input-group">
+                                <input type="text" id="PurchaseDate" name="PurchaseDate" value="@Model.PurchaseDate.ToString("yyyy-MM-dd")" class="datepicker form-control" data-val="true" data-val-required="The PurchaseDate field is required.">
+                            </div>
+                            <span asp-validation-for="PurchaseDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="PurchasePrice"></label>
+                            <div class="input-group">
+                                <input asp-for="PurchasePrice" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="PurchasePrice" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="UsedById"></label>
+                            <div class="input-group">
+                                <select asp-for="UsedById" class="select2 form-control" asp-items="ViewBag.UsedBy"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="UsedById" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Active</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsActive" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Asset/Index?period=@period" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

@@ -1,0 +1,310 @@
+﻿@model List<Employee>
+@inject coderush.Services.App.ICommon _app;
+@using coderush.ViewModels;
+@using Newtonsoft.Json;
+@{
+
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string modelName = "Employee";
+    ViewData["Title"] = "Employee";
+
+    EmployeeSummary summary = _app.GetEmployeeSummary();
+    ChartDoughnut donutChart = _app.GetEmployeeDoughnut();
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div id="accordion" class="accordion">
+        <div class="card">
+            <div id="headingOne">
+                <div class="card-header">
+                    <a href="javascript:void(0)" class="accordion-toggle" data-toggle="collapse" data-target="#collapseOne"
+                       aria-expanded="false" aria-controls="collapseOne">
+                        Analytic
+                    </a>
+                </div>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Employee By Department</h4>
+                                    <div class="chart-container doughnut">
+                                        <canvas id="doughnutChart" height="250" width="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between pb-4">
+                                        <h4 class="card-title mb-1">Summary Count</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Male</p>
+                                                            <h4 class="font-weight-bold">@summary.Male</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-primary font-weight-bold">@summary.MalePercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Female</p>
+                                                            <h4 class="font-weight-bold">@summary.Female</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-info font-weight-bold">@summary.FemalePercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">MOS (< 6)</p>
+                                                            <h4 class="font-weight-bold">@summary.MosLess</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-danger font-weight-bold">@summary.MosLessPercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">MOS (>= 6)</p>
+                                                            <h4 class="font-weight-bold">@summary.MosMore</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-success font-weight-bold">@summary.MosMorePercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-12">
+            <div class="dropdown d-inline">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuOutlineButton1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuOutlineButton1" x-placement="top-start"
+                     style="position: absolute; transform: translate3d(0px, -185px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <h6 class="dropdown-header">Settings</h6>
+                    <a class="dropdown-item" href="~/@controller/DepartmentIndex">Department</a>
+                    <a class="dropdown-item" href="~/@controller/DesignationIndex">Designation</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">List of @ViewData["Title"]</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/@controller/Form" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="10%"></th>
+                                    <th width="20%">Name</th>
+                                    <th width="30%">Designation</th>
+                                    <th width="20%">EmployeeID#</th>
+                                    <th width="10%">Is Connected</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/@controller/Form/@item.EmployeeId"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/@controller/Delete/@item.EmployeeId"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/@controller/LoginOnBehalf/@item.EmployeeId" class="btn btn-primary">Login On Behalf</a>
+                                        </td>
+                                        <td>
+                                            @(item.FirstName + " " + item.LastName)
+                                        </td>
+                                        <td>
+                                            @item.Designation.Name
+                                        </td>
+                                        <td>
+                                            @item.EmployeeIDNumber
+                                        </td>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="custom-checkbox variation3 mb-0">
+                                                    <input class="form-check-input" type="checkbox" @(!String.IsNullOrEmpty(item.SystemUserId) ? "checked" : "") onclick="return false;">
+                                                    <i class="input-helper"></i>
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="mdi mdi-library-books md-18 mr-2"></i> Quick Guide</h4>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-3">
+                            Employee module will provide tools to manage employee data. Register new employee and configure their basic info is one of the module capabilities.
+                        </p>
+                        <h5 class="card-title mb-4">Employee Module Feature:</h5>
+                        <ul class="list list-circle mb-3">
+                            <li>Register New Employee</li>
+                            <li>Setup Employee Basic Info</li>
+                            <li>Setup Employee Staff Info</li>
+                            <li>Setup Employee Salary Info</li>
+                            <li>Setup Employee Bank Account Info</li>
+                            <li>Setup Employee System User Account</li>
+                            <li>Manage Department Data Master</li>
+                            <li>Manage Designation Data Master</li>
+                        </ul>
+                        <h5>
+                            <i class="mdi mdi-lightbulb-on-outline"></i> Tips
+                        </h5>
+                        <p>
+                            Click "Login On Behalf" to enter the system as targeted employee. (impersonation)
+                        </p>
+                        <footer class="blockquote-footer text-primary">
+                            Summary
+                        </footer>
+                    </blockquote>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+    <!-- ================== BEGIN PAGE LEVEL CSS START ================== -->
+    <link href="~/assets/vendor/data-table/css/jquery.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/buttons.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/dataTables.bootstrap.min.css" />
+    <!-- ================== BEGIN PAGE LEVEL END ================== -->
+}
+
+@section Scripts{
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/assets/vendor/data-table/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.flash.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.html5.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.print.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/assets/vendor/chartjs/js/Chart.bundle.min.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var mainTable;
+
+            mainTable = $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                dom: 'lrtip',
+                scrollX: false,
+                pageLength: 5,
+            });
+
+            $('#mainSearch').keyup(function () {
+                mainTable.search($(this).val()).draw();
+            })
+
+        });
+
+        //Doughnut Chart
+        $(function () {
+            var doughnutChart = {
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(donutChart.Labels)),
+                    datasets: [{
+                        label: 'Doughnut chart',
+                        data: @Html.Raw(JsonConvert.SerializeObject(donutChart.Data)),
+                        backgroundColor: @Html.Raw(JsonConvert.SerializeObject(donutChart.Colors)),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: "top"
+                    },
+                    cutoutPercentage: 50
+                }
+            }
+            chart("doughnutChart", "doughnut", doughnutChart.data, doughnutChart.options);
+        });
+
+    </script>
+}
+
+

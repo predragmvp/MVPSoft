@@ -1,0 +1,61 @@
+﻿@model InformationType
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string action = this.ViewContext.RouteData.Values["action"].ToString();
+    string modelName = "InformationType";
+    ViewData["Title"] = modelName + " Delete";
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-newspaper"></i> Award | @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="@controller" asp-action="Submit@(action)" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Delete @modelName? this process is irreversible</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="InformationTypeId" />
+                        <div class="form-group">
+                            <label asp-for="Name"></label>
+                            <div class="input-group">
+                                <input asp-for="Name" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" disabled />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/@controller/@(modelName)Index" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+
+}
+
+

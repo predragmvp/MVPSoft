@@ -1,0 +1,563 @@
+﻿@model Payroll
+@{
+    ViewData["Title"] = "Payroll";
+
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+
+    decimal basicAmount = Model.LinesBasic.Sum(x => x.Amount);
+    var basic = basicAmount == 0m ? "0" : basicAmount.ToString("##,##");
+
+    decimal allowanceAmount = Model.LinesAllowance.Sum(x => x.Amount);
+    var allowance = allowanceAmount == 0m ? "0" : allowanceAmount.ToString("##,##");
+
+    decimal deductionAmount = Model.LinesDeduction.Sum(x => x.Amount);
+    var deduction = deductionAmount == 0m ? "0" : deductionAmount.ToString("##,##");
+
+    decimal unpaidAmount = Model.LinesUnpaidLeave.Sum(x => x.Amount);
+    var unpaid = unpaidAmount == 0m ? "0" : unpaidAmount.ToString("##,##");
+
+    decimal salaryAmount = basicAmount + allowanceAmount + deductionAmount + unpaidAmount;
+    var salary = salaryAmount == 0m ? "0" : salaryAmount.ToString("##,##");
+
+    decimal expenseAmount = Model.LinesCashAdvance.Sum(x => x.Amount) + Model.LinesReimburse.Sum(x => x.Amount);
+    var expense = expenseAmount == 0m ? "0" : expenseAmount.ToString("##,##");
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-cash-usd"></i> @ViewData["Title"] | @(Model.OnBehalf != null ? Model.OnBehalf.FirstName + " " + Model.OnBehalf.LastName : "") | @Model.Periode.ToString("yyyy-MM")</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div id="accordion" class="accordion">
+        <div class="card">
+            <div id="headingOne">
+                <div class="card-header">
+                    <a href="javascript:void(0)" class="accordion-toggle" data-toggle="collapse" data-target="#collapseOne"
+                       aria-expanded="false" aria-controls="collapseOne">
+                       Amount
+                    </a>
+                </div>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between pb-4">
+                                        <h4 class="card-title mb-1">Take Home Pay</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Salary</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-primary font-weight-bold">@salary</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-12">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">CA + Reimbursement</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-success font-weight-bold">@expense</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between pb-4">
+                                        <h4 class="card-title mb-1">Summary</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Basic</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-info font-weight-bold">@basic</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Allowance</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-info font-weight-bold">@allowance</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Deduction</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-danger font-weight-bold">@deduction</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-4">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Unpaid Leave</p>
+                                                            <h4 class="font-weight-bold"></h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-danger font-weight-bold">@unpaid</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="Payroll" asp-action="SubmitForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or edit existing Payroll item</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="PayrollId" />
+                        <div class="form-group">
+                            <label asp-for="PayrollName"></label>
+                            <div class="input-group">
+                                <input asp-for="PayrollName" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="PayrollName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Periode"></label>
+                            <div class="input-group">
+                                <input type="text" id="Periode" name="Periode" value="@Model.Periode.ToString("yyyy-MM")" class="datepickeryearmonth form-control" data-val="true" data-val-required="The Periode field is required.">
+                            </div>
+                            <span asp-validation-for="Periode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnBehalfId"></label>
+                            <div class="input-group">
+                                <select asp-for="OnBehalfId" class="select2 form-control" asp-items="ViewBag.OnBehalf"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="OnBehalfId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Approved</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsApproved" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Is Paid</label>
+                            <div class="form-check">
+                                <label class="custom-checkbox variation3 mb-0">
+                                    <input asp-for="IsPaid" class="form-check-input" />
+                                    <i class="input-helper"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/Payroll/Index?period=@period" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Salary Components | Basic</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentBasicForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="70%">Description</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesBasic)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentBasicForm/@item.PayrollLineBasicId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentBasicDelete/@item.PayrollLineBasicId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Salary Components | Allowance</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentAllowanceForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Description</th>
+                                    <th width="30%">Allowance Type</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesAllowance)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentAllowanceForm/@item.PayrollLineAllowanceId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentAllowanceDelete/@item.PayrollLineAllowanceId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.AllowanceType.Name
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Salary Components | Deduction</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentDeductionForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Description</th>
+                                    <th width="30%">Deduction Type</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesDeduction)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentDeductionForm/@item.PayrollLineDeductionId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentDeductionDelete/@item.PayrollLineDeductionId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.DeductionType.Name
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Salary Components | Unpaid Leave</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentUnpaidLeaveForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Description</th>
+                                    <th width="30%">Unpaid Leave</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesUnpaidLeave)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentUnpaidLeaveForm/@item.PayrollLineUnpaidLeaveId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentUnpaidLeaveDelete/@item.PayrollLineUnpaidLeaveId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.Leave.LeaveName
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Expense Components | Cash Advance</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentCashAdvanceForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Description</th>
+                                    <th width="30%">Expense Type</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesCashAdvance)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentCashAdvanceForm/@item.PayrollLineCashAdvanceId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentCashAdvanceDelete/@item.PayrollLineCashAdvanceId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.ExpenseType.Name
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">Expense Components | Reimbursement</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/Payroll/ComponentReimburseForm?payrollId=@Model.PayrollId&&period=@period" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="40%">Description</th>
+                                    <th width="30%">Expense Type</th>
+                                    <th width="20%">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.LinesReimburse)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Payroll/ComponentReimburseForm/@item.PayrollLineReimburseId?payrollId=@item.PayrollId&period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Payroll/ComponentReimburseDelete/@item.PayrollLineReimburseId?payrollId=@item.PayrollId&period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            @item.Description
+                                        </td>
+                                        <td>
+                                            @item.ExpenseType.Name
+                                        </td>
+                                        <td>
+                                            @item.Amount.ToString("##,##")
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

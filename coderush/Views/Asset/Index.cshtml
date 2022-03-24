@@ -1,0 +1,322 @@
+﻿@model List<Asset>
+@inject coderush.Services.App.ICommon _app;
+@using coderush.ViewModels;
+@using Newtonsoft.Json;
+@{
+
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    ViewData["Title"] = controller;
+    string period = this.Context.Request.Query["period"].ToString();
+    if (String.IsNullOrEmpty(period))
+    {
+        period = DateTime.Now.ToString("yyyy-MM");
+    }
+
+    AssetSummary summary = _app.GetAssetSummaryByPeriod(period);
+    ChartDoughnut donutChart = _app.GetAssetDoughnutByPeriod(period);
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-car"></i> @ViewData["Title"] @(!String.IsNullOrEmpty(period) ? "for Period " + period : "")</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div id="accordion" class="accordion">
+        <div class="card">
+            <div id="headingOne">
+                <div class="card-header">
+                    <a href="javascript:void(0)" class="accordion-toggle" data-toggle="collapse" data-target="#collapseOne"
+                       aria-expanded="false" aria-controls="collapseOne">
+                        Analytic
+                    </a>
+                </div>
+            </div>
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-5 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">Asset Type</h4>
+                                    <div class="chart-container doughnut">
+                                        <canvas id="doughnutChart" height="250" width="250"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center justify-content-between pb-4">
+                                        <h4 class="card-title mb-1">Summary Count and Value</h4>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Used</p>
+                                                            <h4 class="font-weight-bold">@summary.Used</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-primary font-weight-bold">@summary.UsedPercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Not Used</p>
+                                                            <h4 class="font-weight-bold">@summary.NotUsed</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-info font-weight-bold">@summary.NotUsedPercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Value Used</p>
+                                                            <h4 class="font-weight-bold">@summary.UsedValue</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-danger font-weight-bold">@summary.UsedValuePercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="card mb-lg-5">
+                                                <div class="card-body">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="inner flex-grow">
+                                                            <p class="mb-0">Value Not Used</p>
+                                                            <h4 class="font-weight-bold">@summary.NotUsedValue</h4>
+                                                        </div>
+                                                        <div class="inner d-flex align-items-center">
+                                                            <h1 class="text-success font-weight-bold">@summary.NotUsedValuePercentage%</h1>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-6">
+            <div class="dropdown d-inline">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuOutlineButton1"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Actions
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuOutlineButton1" x-placement="top-start"
+                     style="position: absolute; transform: translate3d(0px, -185px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <h6 class="dropdown-header">Settings</h6>
+                    <a class="dropdown-item" href="~/Asset/AssetTypeIndex">Asset Type</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group row">
+                <label class="col-form-label col-sm-2 text-sm-right">Periode</label>
+                <div class="col-sm-6">
+                    <input type="text" id="Period" name="Period" class="datepickeryearmonth form-control">
+                </div>
+                <div class="btn-group col-sm-4" role="group" aria-label="First group">
+                    <a href="#" class="btn btn-primary" onclick="onRefresh()">
+                        <i class="mdi mdi-recycle"></i> Refresh
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="card-title mb-0">List of @ViewData["Title"]</h4>
+                        <div class="btn-toolbar mb-0 d-none d-sm-block" role="toolbar" aria-label="Toolbar with button groups">
+                            <div class="btn-group mr-3" role="group" aria-label="First group">
+                                <a href="/@controller/Form" class="btn btn-primary">
+                                    <i class="mdi mdi-plus-circle"></i> Add
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="grid" class="table table-striped" cellspacing="0" width="100%">
+                            <thead>
+                                <tr class="bg-primary text-white">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <th width="25%">Asset</th>
+                                    <th width="20%">Used By</th>
+                                    <th width="15%">Purchase Date</th>
+                                    <th width="15%">Purchase Price</th>
+                                    <th width="15%">Is Active</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="/Asset/Form/@item.AssetId?period=@period"><i class="icon-note md-18"></i></a>
+                                        </td>
+                                        <td>
+                                            <a href="/Asset/Delete/@item.AssetId?period=@period"><i class="icon-trash md-18"></i></a>
+                                        </td>
+                                        <td><span style="text-decoration-line:@(!item.IsActive ? "line-through" : "none")">@item.AssetName</span></td>
+                                        <td><span>@(item.UsedBy != null ? item.UsedBy.FirstName + " " + item.UsedBy.LastName : "-")</span></td>
+                                        <td>@item.PurchaseDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@item.PurchasePrice.ToString("##,##")</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <label class="custom-checkbox variation3 mb-0">
+                                                    <input class="form-check-input" type="checkbox" @(item.IsActive ? "checked" : "") onclick="return false;">
+                                                    <i class="input-helper"></i>
+                                                </label>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-sm-12 col-md-12">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h4 class="card-title mb-4"><i class="mdi mdi-library-books md-18 mr-2"></i> Quick Guide</h4>
+                    <blockquote class="blockquote blockquote-primary">
+                        <p class="mb-3">
+                            Asset module will give you tools for managing asset that your organization have, tangible or intangible. Asset can be managed and grouped by its registered type. The module will give you capability to centralized asset data and their users.
+                        </p>
+                        <h5 class="card-title mb-4">Asset Features:</h5>
+                        <ul class="list list-circle mb-3">
+                            <li>Create and Register New Asset</li>
+                            <li>Setup and Manage Asset Type </li>
+                            <li>Setup Date and Price of Asset Purchase</li>
+                            <li>Setup Asset User</li>
+                        </ul>
+                        <h5>
+                            <i class="mdi mdi-lightbulb-on-outline"></i> Tips
+                        </h5>
+                        <p>
+                            Select and change period to navigate data between periods.
+                        </p>
+                        <footer class="blockquote-footer text-primary">
+                            Summary
+                        </footer>
+                    </blockquote>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+    <!-- ================== BEGIN PAGE LEVEL CSS START ================== -->
+    <link href="~/assets/vendor/data-table/css/jquery.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/buttons.dataTables.min.css" />
+    <link href="~/assets/vendor/data-table/css/dataTables.bootstrap.min.css" />
+    <!-- ================== BEGIN PAGE LEVEL END ================== -->
+}
+
+@section Scripts{
+    <!-- ================== BEGIN PAGE LEVEL JS ================== -->
+    <script src="~/assets/vendor/data-table/js/jquery.dataTables.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.buttons.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.flash.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/jszip.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/pdfmake.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/vfs_fonts.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.html5.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/buttons.print.min.js"></script>
+    <script src="~/assets/vendor/data-table/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/assets/vendor/chartjs/js/Chart.bundle.min.js"></script>
+    <!-- ================== END PAGE LEVEL JS ================== -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var mainTable;
+
+            mainTable = $('#grid').DataTable({
+                lengthChange: false,
+                info: false,
+                searching: true,
+                dom: 'lrtip',
+                scrollX: false,
+                pageLength: 5,
+            });
+
+            $('#mainSearch').keyup(function () {
+                mainTable.search($(this).val()).draw();
+            })
+        });
+
+        function onRefresh() {
+            if ($('#Period').val() !== '') {
+                location.href = '/Asset/Index?period=' + $('#Period').val();
+            } else {
+                toastr.error('Please select period first!');
+            }
+
+        }
+
+        //Doughnut Chart
+        $(function () {
+            var doughnutChart = {
+                data: {
+                    labels: @Html.Raw(JsonConvert.SerializeObject(donutChart.Labels)),
+                    datasets: [{
+                        label: 'Doughnut chart',
+                        data: @Html.Raw(JsonConvert.SerializeObject(donutChart.Data)),
+                        backgroundColor: @Html.Raw(JsonConvert.SerializeObject(donutChart.Colors)),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        position: "top"
+                    },
+                    cutoutPercentage: 50
+                }
+            }
+            chart("doughnutChart", "doughnut", doughnutChart.data, doughnutChart.options);
+        });
+
+    </script>
+}
+
+

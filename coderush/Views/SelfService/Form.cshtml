@@ -1,0 +1,145 @@
+﻿@model Attendance
+@inject coderush.Data.ApplicationDbContext _context
+@{
+    ViewData["Title"] = "Attendance";
+    string period = this.Context.Request.Query["period"].ToString();
+    var clockIn = "-:-";
+    var clockOut = "-:-";
+    List<Attendance> attendances = new List<Attendance>();
+    attendances = _context.Attendance
+     .Where(x => x.OnBehalfId.Equals(Model.OnBehalfId) &&
+                 x.Clock.Date.Equals(Model.Clock.Date))
+     .OrderBy(x => x.Clock)
+     .ToList();
+
+    //get the most earliest for clock in
+    if (attendances.Count >= 1)
+    {
+        clockIn = attendances[0].Clock.ToString("HH:mm");
+    }
+
+    //get the most latest for clock out
+    if (attendances.Count >= 2)
+    {
+        clockOut = attendances[attendances.Count - 1].Clock.ToString("HH:mm");
+    }
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-calendar-clock"></i> @ViewData["Title"]</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Clock In</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-inline-block">
+                            <div class="d-flex">
+                                <h2 class="mb-0"><i class="mdi mdi-clock text-muted"></i> @clockIn</h2>
+                            </div>
+                            <small class="text-gray">@Model.Clock.ToString("yyyy-MM-dd")</small>
+                        </div>
+                        <div class="d-inline-block">
+                            <div class="bg-success px-4 py-2 rounded">
+                                <i class="mdi mdi-door-closed text-white md-36"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+        <div class="col-12 col-md-6">
+            <article class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Clock Out</h5>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-inline-block">
+                            <div class="d-flex">
+                                <h2 class="mb-0"><i class="mdi mdi-clock text-muted"></i> @clockOut</h2>
+                            </div>
+                            <small class="text-gray">@Model.Clock.ToString("yyyy-MM-dd")</small>
+                        </div>
+                        <div class="d-inline-block">
+                            <div class="bg-warning px-4 py-2 rounded">
+                                <i class="mdi mdi-door-open text-white md-36"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="SelfService" asp-action="SubmitForm" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Clock In / Out</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="AttendanceId" />
+                        <input type="hidden" asp-for="AttendanceName" />
+                        <input type="hidden" asp-for="Clock" />
+                        <input type="hidden" asp-for="OnBehalfId" />
+                        <div class="form-group">
+                            <label asp-for="AttendanceName"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="AttendanceName" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="AttendanceName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input disabled asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Clock"></label>
+                            <div class="input-group">
+                                <input disabled type="text" id="Clock" name="Clock" value="@Model.Clock.ToString("yyyy-MM-dd HH:mm:ss")" class="datetimepicker form-control" data-val="true" data-val-required="The Clock field is required.">
+                            </div>
+                            <span asp-validation-for="Clock" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="OnBehalfId"></label>
+                            <div class="input-group">
+                                <select disabled asp-for="OnBehalfId" class="select2 form-control" asp-items="ViewBag.OnBehalf"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="OnBehalfId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/SelfService/Index?period=@DateTime.Now.ToString("yyyy-MM")" class="btn btn-default">Back</a>
+                        @if (String.IsNullOrEmpty(Model.AttendanceId))
+                        {
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        }
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+

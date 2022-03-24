@@ -1,0 +1,80 @@
+﻿@model BenefitTemplateLine
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string action = this.ViewContext.RouteData.Values["action"].ToString();
+    string modelName = "BenefitTemplateLine";
+    ViewData["Title"] = modelName + " Form";
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> Payroll | @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="@controller" asp-action="Submit@(action)" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Create or Edit Existing @modelName</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="BenefitTemplateLineId" />
+                        <input type="hidden" asp-for="BenefitTemplateId" />
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <div class="input-group">
+                                <input asp-for="Description" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="AllowanceTypeId"></label>
+                            <div class="input-group">
+                                <select asp-for="AllowanceTypeId" class="select2 form-control" asp-items="ViewBag.Allowance"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="AllowanceTypeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="DeductionTypeId"></label>
+                            <div class="input-group">
+                                <select asp-for="DeductionTypeId" class="select2 form-control" asp-items="ViewBag.Deduction"></select>
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="DeductionTypeId" class="text-danger"></span>
+                        </div>                       
+                        <div class="form-group">
+                            <label asp-for="Amount"></label>
+                            <div class="input-group">
+                                <input asp-for="Amount" class="form-control" />
+                                <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                            </div>
+                            <span asp-validation-for="Amount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="/@controller/BenefitTemplateForm/@Model.BenefitTemplateId" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+
