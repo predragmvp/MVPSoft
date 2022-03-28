@@ -92,7 +92,7 @@ namespace coderush
             /// Add Custom Common Security Service as transient service
             services.AddTransient<Services.Security.ICommon, Services.Security.Common>();
             /// Add Custom Log service as transient service
-            services.AddTransient<Services.Log.IRepository, Services.Log.Repository>();
+            //services.AddTransient<Services.Log.IRepository, Services.Log.Repository>();
             /// Add Custom common app service as transient service
             services.AddTransient<Services.App.ICommon, Services.App.Common>();
             services.AddTransient<IEmailSender, EmailSender>();
@@ -163,7 +163,7 @@ namespace coderush
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Todo}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
         }

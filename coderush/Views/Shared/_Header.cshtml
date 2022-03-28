@@ -2,11 +2,15 @@
 <header class="top-bar flex-row align-items-center">
     <!-- Logo  -->
     <div class="nav-brand">
-        <div class="hamburg-icon">
-            <a href="javascript:void(0)" class="nav-link">
-                <i class="mdi mdi-menu md-24"></i>
-            </a>
-        </div>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="hamburg-icon">
+                <a href="javascript:void(0)" class="nav-link">
+                    <i class="mdi mdi-menu md-24"></i>
+                </a>
+            </div>
+        }
+
         <div class="navbar-header">
             <h2 class="mb-0">
                 <a class="navbar-brand" href="/Identity/Account/Manage/Index">
@@ -18,67 +22,99 @@
     <!-- Logo End  -->
     <!-- Right Nav -->
     <div class="navbar-container">
-        <div class="right-bar align-self-center">
-            <div class="search-area">
-                <input class="form-control no-border" type="text" placeholder="Search" id="mainSearch" name="mainSearch" />
-                <div class="search-icon">
-                    <i class="mdi mdi-magnify md-24"></i>
-                    <i class="mdi mdi-arrow-left md-24"></i>
-                </div>
-                <div class="clear-icon">
-                    <i class="mdi mdi-close md-24"></i>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="right-bar align-self-center">
+
+                <div class="search-area">
+                    <input class="form-control no-border" type="text" placeholder="Search" id="mainSearch" name="mainSearch" />
+                    <div class="search-icon">
+                        <i class="mdi mdi-magnify md-24"></i>
+                        <i class="mdi mdi-arrow-left md-24"></i>
+                    </div>
+                    <div class="clear-icon">
+                        <i class="mdi mdi-close md-24"></i>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
         <button class="d-md-none three-dots">
             <i class="mdi mdi-dots-vertical md-24"></i>
         </button>
         <div class="notifications">
             <ul>
-                
-                <li>
-                    <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link" id="userProfile" aria-haspopup="true"
-                       aria-expanded="false">
-                        <img src="~/assets/images/users-thumbs/blank-person-white.png" height="24" width="24" alt="user" class="rounded-circle align-middle" />
+                <li class="nav-item active">
+                    <a class="nav-link" asp-controller="Home"  asp-action="Index" >Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" asp-controller="Careers"  asp-action="Index" >Careers<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        More
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="userProfile">
-                        <ul>
-                            <li>
-                                <a href="/Identity/Account/Manage/Index" class="p-0 border-bottom">
-                                    <div class="d-flex w-100 justify-content-center">
-                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center">
-                                            <i class="mdi mdi-account-outline mr-0 text-gray"></i>
-                                        </div>
-                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
-                                            <i class="mdi mdi-key mr-0 text-gray"></i>
-                                        </div>
-                                        <div class="py-3 px-4 d-flex align-items-center justify-content-center">
-                                            <i class="mdi mdi-exit-to-app mr-0 text-gray"></i>
-                                        </div>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/Identity/Account/Manage/Index">
-                                    Profile
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/Identity/Account/Manage/ChangePassword">
-                                    Change Password
-                                </a>
-                            </li>
-                            <li>
-                                <form id="formSignout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Todo")">
-                                    <a href="javascript:void(0)" onclick="document.getElementById('formSignout').submit();">
-                                        Sign Out
-                                    </a>
-                                </form>                                
-                            </li>
-                        </ul>
+                    <div class="dropdown-menu w-25" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item text-dark" asp-controller="Services"  asp-action="Index" >Services</a>
+                        <a class="dropdown-item text-dark" asp-controller="Solutions" asp-action="Index" >Solutions</a>
+                        <a class="dropdown-item text-dark" asp-controller="WhoWeAre"  asp-action="Index" >Who We Are</a>
+                        <a class="dropdown-item text-dark" asp-controller="Contact"   asp-action="Index" >Contact</a>
                     </div>
                 </li>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item active">
+                        <a  asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Login", "Account")" class="nav-link" >Login<span class="sr-only">(current)</span></a>
+                    </li>
+                }
             </ul>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul>
+                    <li>
+                        <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link" id="userProfile" aria-haspopup="true"
+                           aria-expanded="false">
+                            <img src="~/assets/images/users-thumbs/blank-person-white.png" height="24" width="24" alt="user" class="rounded-circle align-middle" />
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="userProfile">
+                            <ul>
+                                <li>
+                                    <a href="/Identity/Account/Manage/Index" class="p-0 border-bottom">
+                                        <div class="d-flex w-100 justify-content-center">
+                                            <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-account-outline mr-0 text-gray"></i>
+                                            </div>
+                                            <div class="py-3 px-4 d-flex align-items-center justify-content-center border-left border-right">
+                                                <i class="mdi mdi-key mr-0 text-gray"></i>
+                                            </div>
+                                            <div class="py-3 px-4 d-flex align-items-center justify-content-center">
+                                                <i class="mdi mdi-exit-to-app mr-0 text-gray"></i>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/Identity/Account/Manage/Index">
+                                        Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/Identity/Account/Manage/ChangePassword">
+                                        Change Password
+                                    </a>
+                                </li>
+                                <li>
+                                    <form id="formSignout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                                        <a href="javascript:void(0)" onclick="document.getElementById('formSignout').submit();">
+                                            Sign Out
+                                        </a>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            }
+
         </div>
     </div><!-- Right Nav End -->
 </header>

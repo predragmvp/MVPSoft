@@ -22,13 +22,27 @@
     <div id="wrapper">
         @await Html.PartialAsync("_Header")
         <!-- Content Wrapper Start -->
+
         <div class="main-wrapper" id="main-wrapper">
-            @await Html.PartialAsync("_Navigation")
-            <!-- Main Start -->
-            <main>
-                @RenderBody()
-                @await Html.PartialAsync("_Footer")
-            </main><!-- Main End -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                @await Html.PartialAsync("_Navigation")
+                <!-- Main Start -->
+                <main>
+                    @RenderBody()
+                    @await Html.PartialAsync("_Footer")
+                </main>
+                <!-- Main End -->
+            }
+            else
+            {
+                <div class="container-fluid">
+                    <!-- Main Start -->
+                    @RenderBody()
+                    @await Html.PartialAsync("_Footer")
+                </div>
+            }
+
         </div><!-- Content Wrapper End -->
     </div><!-- Wrapper End -->
     <!-- ================== BEGIN BASE JS ================== -->
