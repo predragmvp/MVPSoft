@@ -26,6 +26,7 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
     <Folder Include="Services\Email\" />
+    <Folder Include="wwwroot\css\website\" />
   </ItemGroup>
 
 </Project>
