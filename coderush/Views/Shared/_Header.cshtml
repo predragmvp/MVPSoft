@@ -2,15 +2,12 @@
 <header class="top-bar flex-row align-items-center">
     <!-- Logo  -->
     <div class="nav-brand">
-        @if (User.Identity.IsAuthenticated)
-        {
+
             <div class="hamburg-icon">
                 <a href="javascript:void(0)" class="nav-link">
                     <i class="mdi mdi-menu md-24"></i>
                 </a>
             </div>
-        }
-
         <div class="navbar-header">
             <h2 class="mb-0">
                 <a class="navbar-brand" href="/Identity/Account/Manage/Index">
@@ -22,8 +19,6 @@
     <!-- Logo End  -->
     <!-- Right Nav -->
     <div class="navbar-container">
-        @if (User.Identity.IsAuthenticated)
-        {
             <div class="right-bar align-self-center">
 
                 <div class="search-area">
@@ -37,38 +32,10 @@
                     </div>
                 </div>
             </div>
-        }
         <button class="d-md-none three-dots">
             <i class="mdi mdi-dots-vertical md-24"></i>
         </button>
         <div class="notifications">
-            <ul>
-                <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Home"  asp-action="Index" >Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Careers"  asp-action="Index" >Careers<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        More
-                    </a>
-                    <div class="dropdown-menu w-25" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item text-dark" asp-controller="Services"  asp-action="Index" >Services</a>
-                        <a class="dropdown-item text-dark" asp-controller="Solutions" asp-action="Index" >Solutions</a>
-                        <a class="dropdown-item text-dark" asp-controller="WhoWeAre"  asp-action="Index" >Who We Are</a>
-                        <a class="dropdown-item text-dark" asp-controller="Contact"   asp-action="Index" >Contact</a>
-                    </div>
-                </li>
-                @if (!User.Identity.IsAuthenticated)
-                {
-                    <li class="nav-item active">
-                        <a  asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Login", "Account")" class="nav-link" >Login<span class="sr-only">(current)</span></a>
-                    </li>
-                }
-            </ul>
-            @if (User.Identity.IsAuthenticated)
-            {
                 <ul>
                     <li>
                         <a href="javascript:void(0)" data-toggle="dropdown" class="nav-link" id="userProfile" aria-haspopup="true"
@@ -103,7 +70,7 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <form id="formSignout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")">
+                                    <form id="formSignout" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Tode")">
                                         <a href="javascript:void(0)" onclick="document.getElementById('formSignout').submit();">
                                             Sign Out
                                         </a>
@@ -113,8 +80,6 @@
                         </div>
                     </li>
                 </ul>
-            }
-
         </div>
     </div><!-- Right Nav End -->
 </header>

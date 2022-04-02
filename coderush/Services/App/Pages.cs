@@ -137,7 +137,13 @@ namespace coderush.Services.App
             public const string UrlDefault = "/Settings/Index";
             public const string NavigationName = "Settings";
         }
-
+        public static class JobApplications
+        {
+            public const string ControllerName = "Website";
+            public const string RoleName = "JobApplications";
+            public const string UrlDefault = "/Website/JobApplications";
+            public const string NavigationName = "JobApplications";
+        }
 
     }
 }

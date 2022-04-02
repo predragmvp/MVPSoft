@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "_LayoutWebsite";
+}
+@model List<JobPost>
+@{
+
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string modelName = "JobPost";
+    ViewData["Title"] = "JobPost";
+}
+
+<div class="container mt-5 pb-5">
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section>
+    <div id="accordion" class="accordion">
+        <div class="card">
+            <div id="headingOne">
+                <div class="card-header">
+                    <h1>Active Jobs <span class="badge badge-primary">@Model.Count()</span></h1>
+                </div>
+            </div>
+            @foreach (var item in Model)
+            {
+                <p class="text-center pt-2 border">
+                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample+@item.JobPostId" role="button" aria-expanded="false" aria-controls="collapseExample">
+                        @item.JobTitle
+                    </a>
+                </p>
+                <div class="collapse" id="collapseExample+@item.JobPostId">
+                    <div class="card card-body">
+                        @Html.Raw(item.JobDescription)
+                        <a class="btn btn-primary"  asp-controller="Website" asp-action="JobSubmit" asp-route-id="@item.JobPostId">Apply Now</a>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/vendor/jQuery/js/jquery-3.2.1.min.js"></script>
+<script src="~/assets/vendor/bootstrap/js/popper.min.js"></script>
+<script src="~/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/assets/vendor/toastr/toastr.min.js"></script>
+
+
+

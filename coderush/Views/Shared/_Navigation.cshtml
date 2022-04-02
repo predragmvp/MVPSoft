@@ -192,7 +192,16 @@
                     </a>
                 </li>
             }
-
+            <!--Job Applications-->
+            @if (User.IsInRole(Pages.JobApplications.RoleName))
+            {
+                <li class="nav-item @Html.IsSelected(controller: Pages.JobApplications.ControllerName)Route">
+                    <a class="nav-link waves-effect" title="@Pages.JobApplications.NavigationName" href="@Pages.JobApplications.UrlDefault">
+                        <i class="mdi mdi-door-open md-18 mr-2"></i>
+                        <span class="menu-title">@Pages.JobApplications.NavigationName</span>
+                    </a>
+                </li>
+            }
 
         </ul>
     </nav>

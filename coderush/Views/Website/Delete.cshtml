@@ -1,0 +1,143 @@
+﻿@model JobPost
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string action = this.ViewContext.RouteData.Values["action"].ToString();
+    string modelName = "JobPost";
+    ViewData["Title"] = modelName + " Delete";
+}
+
+<!-- Content Start -->
+<div class="content-wrapper">
+    <!-- Heading Start -->
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="@controller" asp-action="Submit@(action)" method="post">
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Delete @modelName? this process is irreversible</h4>
+                    </div>
+                </article>
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Basic Info</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="JobPostId" />
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="JobTitle"></label>
+                                    <div class="input-group">
+                                        <input asp-for="JobTitle" class="form-control" disabled />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="JobTitle" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="JobDescription"></label>
+                                    <div class="input-group">
+                                        <textarea id="editor" asp-for="JobDescription" style="height: 70px;" class="form-control" disabled></textarea>
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="JobDescription" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>Is Active</label>
+                                    <div class="form-check">
+                                        <label class="custom-checkbox variation3 mb-0">
+                                            <input asp-for="IsActive" class="form-check-input" disabled />
+                                            <i class="input-helper"></i>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+                </article>
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <a href="/@controller/Job" class="btn btn-default">Back</a>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Content End -->
+
+@section Styles{
+
+}
+
+@section Scripts {
+    @*TinyMCE*@
+    <script src="https://cdn.tiny.cloud/1/a1i2eecy97mxcajo8omwpxyo26rnfo7pqviqwo6myxc31i40/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        function getTinyMCE() {
+            tinymce.init({
+                selector: '#editor',
+                plugins: 'image code ,paste,link',
+                toolbar: 'undo redo | styleselect | fontselect | forecolor | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | link image | code',
+                paste_as_text: true,
+                image_title: true,
+                height: 340,
+                width: "100%",
+                readonly: 1,
+                automatic_uploads: true,
+
+                file_picker_types: 'image',
+                /* and here's our custom image picker*/
+                file_picker_callback: function (cb, value, meta) {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/*');
+
+
+                    input.onchange = function () {
+                        var file3 = this.files[0];
+
+                        var reader = new FileReader();
+                        reader.onload = function () {
+
+                            var id = 'blobid' + (new Date()).getTime();
+                            var blobCache = tinymce.activeEditor.editorUpload.blobCache;
+                            var base64 = reader.result.split(',')[1];
+                            var blobInfo = blobCache.create(id, file3, base64);
+                            blobCache.add(blobInfo);
+
+                            cb(blobInfo.blobUri(), { title: file3.name });
+
+                        };
+                        reader.readAsDataURL(file3);
+
+                    };
+
+
+                    input.click();
+                },
+                content_style: 'body { font-family:Andale Mono=andale mono,times; Arial=arial,helvetica,sans-serif; Arial Black=arial black,avant garde; Book Antiqua=book antiqua,palatino; Comic Sans MS=comic sans ms,sans-serif; Courier New=courier new,courier; Georgia=georgia,palatino; Helvetica=helvetica; Impact=impact,chicago; Symbol=symbol; Tahoma=tahoma,arial,helvetica,sans-serif; Terminal=terminal,monaco; Times New Roman=times new roman,times; Trebuchet MS=trebuchet ms,geneva; Verdana=verdana,geneva; Webdings=webdings; Wingdings=wingdings,zapf dingbats; font-size:14px }'
+            });
+        }
+        $(function () {
+            getTinyMCE();
+        });
+    </script>
+}
+
+

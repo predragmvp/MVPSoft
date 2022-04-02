@@ -114,6 +114,8 @@ namespace coderush.Services.App
         ChartDoughnut GetHolidayVsWorkdayDoughnutByPeriod(string period);
 
         ChartDoughnut GetLeaveDoughnutByPeriodByEmployeeId(string period, string employeeId);
+        JobSummary GetJobSummary();
+        ChartDoughnut GetJobDoughnut();
     }
 
 }

@@ -11760,9 +11760,9 @@ main .content-wrapper {
 }
 
 /* line 39, ../sass/helpers/_common.scss */
-/*#wrapper {
+#wrapper {
   overflow: hidden;
-}*/
+}
 
 /* line 42, ../sass/helpers/_common.scss */
 #wrapper.small-nav main {

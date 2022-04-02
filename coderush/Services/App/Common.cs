@@ -2199,5 +2199,76 @@ namespace coderush.Services.App
             }
         }
 
+        public JobSummary GetJobSummary()
+        {
+            try
+            {
+                var JobPosts  = _context.JobPost.AsQueryable();
+                int totalJob = 0;
+                int active = 0;
+                int inActive = 0;
+                active = JobPosts.Where(x => x.IsActive.Equals(true)).Count();
+                inActive = JobPosts.Where(x => x.IsActive.Equals(false)).Count();
+                totalJob = active + inActive;
+
+                return new JobSummary
+                {
+                    TotalJob = totalJob.ToString(),
+                    Active = active.ToString(),
+                    InActive = inActive.ToString()
+                };
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public ChartDoughnut GetJobDoughnut()
+        {
+            try
+            {
+                ChartDoughnut result = new ChartDoughnut();
+                List<string> labels = new List<string>();
+                List<string> colors = new List<string>();
+                List<int> datas = new List<int>();
+                var JobPosts = _context.JobPost.AsQueryable();
+
+                int active = 0;
+                int inActive = 0;
+
+                active = JobPosts
+                       .Where(x => x.IsActive.Equals(true))
+                       .Count();
+                inActive = JobPosts
+                       .Where(x => x.IsActive.Equals(false))
+                       .Count();
+
+                labels.Add("Active");
+                colors.Add(ColorList.GetAllRGBA()[0]);
+                datas.Add(active);
+
+                labels.Add("In Active");
+                colors.Add(ColorList.GetAllRGBA()[1]);
+                datas.Add(inActive);
+
+
+                labels.Add("Total");
+                colors.Add(ColorList.GetAllRGBA()[2]);
+                datas.Add(inActive + active);
+
+                result.Labels = labels.ToArray();
+                result.Colors = colors.ToArray();
+                result.Data = datas.ToArray();
+
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }

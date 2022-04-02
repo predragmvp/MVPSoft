@@ -62,6 +62,8 @@ namespace coderush.Data
         public DbSet<PayrollLineCashAdvance> PayrollLineCashAdvance { get; set; }
         public DbSet<PayrollLineReimburse> PayrollLineReimburse { get; set; }
         public DbSet<PayrollLineUnpaidLeave> PayrollLineUnpaidLeave { get; set; }
+        public DbSet<JobPost> JobPost { get; set; }
+        public DbSet<JobApplication> JobApplication { get; set; }
 
     }
 }

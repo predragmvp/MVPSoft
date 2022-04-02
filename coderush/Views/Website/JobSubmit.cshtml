@@ -1,0 +1,95 @@
+﻿@{
+    Layout = "_LayoutWebsite";
+}
+@model JobApplication
+@{
+    string controller = this.ViewContext.RouteData.Values["controller"].ToString();
+    string action = this.ViewContext.RouteData.Values["action"].ToString();
+    string modelName = "Apply Job";
+    ViewData["Title"] = modelName + " Form";
+}
+
+<div class="container mt-5 pb-5">
+    <section class="heading">
+        <h2 class="mb-2"><i class="mdi mdi-account-card-details"></i> @modelName</h2>
+        <div class="titles">
+            @await Html.PartialAsync(PartialView.StatusMessage, TempData[StaticString.StatusMessage])
+        </div>
+    </section><!-- Heading End -->
+    <div class="row">
+        <div class="col-12">
+            <form asp-controller="@controller" asp-action="Submit@(action)" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="JobPostId" />
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <h4 class="card-title mb-0">Basic Info</h4>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" asp-for="JobPostId" />
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Name"></label>
+                                    <div class="input-group">
+                                        <input asp-for="Name" class="form-control text-dark" />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-group">
+                                    <label asp-for="Email"></label>
+                                    <div class="input-group">
+                                        <input asp-for="Email" class="form-control text-dark" />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label asp-for="Description"></label>
+                                    <div class="input-group">
+                                        <input asp-for="Description" class="form-control text-dark" />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label>File</label>
+                                    <div class="input-group">
+                                        <input required="required" type="file" asp-for="Resume" class="form-control" accept="application/pdf" />
+                                        <span class="input-group-addon" aria-hidden="true"><span class="glyphicon glyphicon-ok text-success"></span></span>
+                                    </div>
+                                    <span asp-validation-for="Resume" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </article>
+                <article class="card mb-4">
+                    <div class="card-header">
+                        <a class="btn btn-secondary" asp-controller="Website" asp-action="Carer" />Back</a>
+                        <button type="submit" class="btn btn-primary">Apply</button>
+                    </div>
+                </article>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/vendor/jQuery/js/jquery-3.2.1.min.js"></script>
+<script src="~/assets/vendor/bootstrap/js/popper.min.js"></script>
+<script src="~/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="~/assets/vendor/toastr/toastr.min.js"></script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
