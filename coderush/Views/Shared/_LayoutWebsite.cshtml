@@ -17,8 +17,7 @@
     <link href="/css/website/responsive.css" rel="stylesheet"/>
     <link href="/css/website/Site.css" rel="stylesheet"/>
     @RenderSection("Styles", required: false)
-
-
+    
 </head>
 <body>
     <!-- Header Section Start -->
@@ -98,12 +97,12 @@
                 <div class="col-md-10">
                     <div class="contents text-center">
                         <h1 class="wow fadeInDown" data-wow-duration="1000ms" data-wow-delay="0.3s">MVP-Soft: Freelance flexibility meets corporate experience.</h1>
-                        <p class="lead  wow fadeIn" data-wow-duration="1000ms" data-wow-delay="400ms">MVP-Soft has developed 50+ software tools, helping companies across a wide variety of sectors compete more effectively in the marketplace. Our efficiency in delivering precisely on requirements is legendary among our clients. </p>
-                        <p class="lead  wow fadeIn" data-wow-duration="1000ms" data-wow-delay="400ms">
+                        <p class="lead  wow fadeIn onlyHome" data-wow-duration="1000ms" data-wow-delay="400ms">MVP-Soft has developed 50+ software tools, helping companies across a wide variety of sectors compete more effectively in the marketplace. Our efficiency in delivering precisely on requirements is legendary among our clients. </p>
+                        <p class="lead  wow fadeIn onlyHome" data-wow-duration="1000ms" data-wow-delay="400ms">
                             With the addition of a skilled designer and a dedicated QA specialist to our ranks, we are now ready to provide an even more expansive range of web and software development solutions.
                             Our freelance experience taught us the importance of using lean production techniques to hit our delivery deadlines. Our corporate experience helped us understand intricate organizational needs. Working in so many different kinds of enterprises taught us to understand all kinds of requirements and to provide advice when we see a better solution to accomplish the business objectives.
                         </p>
-                        <h1 class="wow fadeInUp" data-wow-duration="1000ms" data-wow-delay="400ms">The key to our success: we listen and deliver on time.</h1>
+                        <h1 class="wow fadeInUp onlyHome" data-wow-duration="1000ms" data-wow-delay="400ms">The key to our success: we listen and deliver on time.</h1>
                     </div>
                 </div>
             </div>
@@ -112,5 +111,36 @@
     <!-- Header Section End -->
     @RenderBody()
     @RenderSection("Scripts", required: false)
+
+<!-- Footer Section Start -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <!-- Footer Links -->
+            <div class="col-lg-6 col-sm-6 col-xs-12">
+                @*<ul class="footer-links">
+                        <li>
+                            <a href="#">Homepage</a>
+                        </li>
+                        <li>
+                            <a href="#">Services</a>
+                        </li>
+                        <li>
+                            <a href="#">About Us</a>
+                        </li>
+                        <li>
+                            <a href="#">Contact</a>
+                        </li>
+                    </ul>*@
+            </div>
+            <div class="col-lg-6 col-sm-6 col-xs-12">
+                <div class="copyright">
+                    <p>MVP-Soft &copy; 2018</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Section End -->
 </body>
 </html>

@@ -1274,3 +1274,7 @@ footer {
 .copyright p a:hover {
   color: #62bb46;
 }
+
+.onlyHome{
+    display:none;
+}
